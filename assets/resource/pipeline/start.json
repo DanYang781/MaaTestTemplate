@@ -1,0 +1,65 @@
+{
+    "start_app":{
+        "action": "StartApp",
+        "package":"com.bilibili.azurlane",
+        "next":[
+            "wait_animation"
+        ],
+        "focus":true,
+        "focus_tip":"启动游戏APP",
+        "focus_failed":"执行失败"
+    },
+    "wait_animation":{
+        "action":"DoNothing",
+        "post_wait_freezes":5000,
+        "next":[
+            "find_startpage_menu",
+            "wait_animation"
+        ],
+        "interrupt":[
+            "update",
+            "check_downloading"
+        ]
+    },
+
+    "find_startpage_menu":{
+        "recognition":"OCR",
+        "expected":"服务器",
+        "action": "click",
+        "post_delay":5000,
+        "target":[500,270,135,50],
+        "next":[
+            "enter_mainmenu",
+            "start_task_stop"
+        ]
+    },
+    "enter_mainmenu":{
+        "recognition":"TemplateMatch",
+        "template":"startpage/announcement.png",
+        "roi":[44,83,149,53],
+        "action":"click",
+        "target":[1182,74,40,37],
+        "next":"start_task_stop"
+    },
+    "start_task_stop":{
+         "recognition": "TemplateMatch",
+        "template": "common/home.png",
+        "roi": [
+            1027,
+            430,
+            77,
+            153
+        ]
+    },
+    "update":{
+        "recognition": "TemplateMatch",
+        "template": "common/update.png",
+        "action": "click"
+    },
+    "check_downloading":{
+        "recognition": "OCR",
+        "template": "下载",
+        "post_delay":5000
+    }
+
+}

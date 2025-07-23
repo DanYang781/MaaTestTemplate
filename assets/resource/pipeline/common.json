@@ -1,0 +1,36 @@
+{
+    "skip_animation_click":{
+        "pre_wait_freezes":500,
+        "action":"click",
+        "target" : [567,581,69,26]
+    },
+
+    "to_home":{
+        "recognition":"TemplateMatch",
+        "template":"common/tohome.png",
+        "recommended roi" : [1207,13,41,41],
+        "action":"click"
+    },
+
+    "click_confirm":{
+        "recognition":"TemplateMatch",
+        "template":"common/confirm.png",
+        "action":"click"
+    },
+
+    "check_standby":{
+        "recognition":"TemplateMatch",
+        "template" : "common/standby.png",
+        "recommended roi" : [858,666,19,26],
+        "action":"click",
+        "target" : [599,605,56,26]
+    },
+
+    "back":{
+        "description":"点击返回按钮",
+        "recognition":"TemplateMatch",
+        "template" : "common/back.png",
+        "roi" : [23,22,69,61],
+        "action":"click"
+    }
+}

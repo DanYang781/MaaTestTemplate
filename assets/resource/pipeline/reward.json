@@ -1,0 +1,730 @@
+{
+    "reward":{
+        "next":"reward_open",
+        "interrupt":[
+            "to_home",
+            "check_standby"
+        ]
+    },
+
+    "reward_open":{
+        "description":"打开奖励界面",
+        "recognition":"TemplateMatch",
+        "template" : "reward/reward_menu.png",
+        "roi" : [6,210,33,47],
+        "action":"click",
+        "post_wait_freezes":100,
+        "next":[
+            "reward_find",
+            "reward_open",
+            "reward"
+        ]
+    },
+
+    "reward_find":{
+        "description":"确认奖励界面",
+        "recognition":"TemplateMatch",
+        "template" : "reward/reward_find.png",
+        "recommended roi" : [85,161,102,42],
+         "next":[
+            "reward_oil",
+            "reward_find",
+            "reward_open",
+            "reward"
+        ]
+        
+    },
+
+    "reward_oil":{
+        "description":"收取石油",
+        "action":"click",
+        "target" : [91,45,41,41],
+        "next":[
+            "reward_money"
+        ]
+    },
+
+    "reward_money":{
+        "description":"收取金币",
+        "action":"click",
+        "target" : [296,36,37,38],
+        "next":[
+            "reward_exp"
+        ]
+    },
+
+    "reward_exp":{
+        "description":"收取经验书",
+        "action":"click",
+        "target" : [450,47,37,38],
+        "post_wait_freezes":500,
+        "next":"reward_todolist"
+    },
+
+    "reward_todolist":{
+        "description":"任务清单，可自主选择",
+        "post_wait_freezes":{
+            "time":1000,
+            "target" : [402,272,126,40]
+        },
+        "next":[
+            "reward_delegation",
+            "reward_techacademy",
+            "reward_return"
+        ]
+    },
+
+    "reward_return":{
+        "description":"任务完成，返回主界面",
+        "recognition":"TemplateMatch",
+        "template" : "reward/reward_return_check.png",
+        "roi" : [60,231,134,62],
+        "action":"click",
+        "target" : [725,530,51,37]
+    },
+
+    "reward_delegation":{
+        "enabled":true,
+        "description":"军事委托,如果军事委托有完成或空闲的委托，则进行领取或接取委托", 
+        "recognition":"OCR",
+        "expected":[
+            "完成",
+            "空闲"
+        ],
+        "roi" : [232,236,147,108],
+        "next":[
+            "reward_delegation_get",
+            "reward_delegation_menu"
+        ]
+    },
+
+    "reward_delegation_get":{
+        "description":"领取军事委托奖励",
+        "recognition":"OCR",
+        "expected":"完成",
+        "roi" : [398,266,134,47],
+        "action":"click",
+        "post_wait_freezes":1000,
+        "next":"reward_delegation_menu",
+        "interrupt":"skip_animation_click"
+    },
+
+    "reward_delegation_menu":{
+        "description":"接取军事委托",
+        "recognition":"OCR",
+        "expected":"前往",
+        "roi" : [396,269,137,47],
+        "action":"click",
+        "post_wait_freezes":500,
+        "next":[
+            "reward_delegation_emergent",
+            "reward_delegation_menu",
+            "reward_delegation_get",
+            "reward_delegation"
+        ]
+    },
+
+    "reward_delegation_emergent":{
+        "description":"进入紧急军事委托界面",
+        "recognition":"TemplateMatch",
+        "template" : [
+            "reward/reward_delegation_emergent1.png",
+            "reward/reward_delegation_emergent2.png"
+        ],
+        "action":"click",
+        "next":[
+            "reward_delegation_emergent_list"
+        ]
+    },
+
+    "reward_delegation_emergent_list":{
+        "description":"扫描有哪些紧急委托可以接取,如果没有委托或者委托还有没有接取完则跳转到日常委托界面",
+        "next":[
+            "reward_delegation_limit",
+            "reward_delegation_emergency_BIW",
+            "reward_delegation_emergency_OD2",
+            "reward_delegation_emergent_swipe",
+            "reward_delegation_emergent_second",
+            "reward_delegation_normal"
+        ]
+    },
+
+    "reward_delegation_limit":{
+        "description":"查看委托是否达到上限，如果达到上限，则点击返回按钮",
+        "recognition":"OCR",
+        "expected":"0/4",
+        "roi" : [1067,14,51,26],
+        "next":"reward_delegation_back"
+    },
+
+    "reward_delegation_emergency_BIW":{
+        "description":"扫描BIW护卫的系列委托,并通过点检进入委托详情",
+        "recognition":"TemplateMatch",
+        "template" :[
+            "reward/reward_delegation_emergency_BIW2H.png"
+        ],
+        "roi" : [326,70,283,593],
+        "threshold":0.95,
+        "action":"click",
+        "post_wait_freezes":500,
+        "next":[
+            "reward_delegation_emergent_dispatch1"
+        ]
+    },
+
+    "reward_delegation_emergency_OD2":{
+        "description":"扫描石油开发2委托,并通过点检进入委托详情",
+        "recognition":"TemplateMatch",
+        "roi" : [326,70,283,593],
+        "template" :"reward/reward_delegation_emergency_OD2.png",
+        "threshold":0.95,
+        "action":"click",
+        "post_wait_freezes":500,
+        "next":[
+            "reward_delegation_emergent_dispatch1"
+        ]
+    },
+
+    "reward_delegation_emergent_swipe":{
+        "description":"如果都没有合适的委托则选择下滑，判定标准为是否有滚动条，下滑动作完成后重新查询委托列表",
+        "recognition":"TemplateMatch",
+        "template" : "reward/reward_delegation_swipe.png",
+        "roi" : [1244,632,26,50],
+        "action":"Swipe",
+        "end" : [153,252,1,1],
+        "begin" : [152,394,1,1],
+        "next":"reward_delegation_emergent_list"
+    },
+
+    "reward_delegation_emergent_second":{
+        "description":"扫描次优先级的委托（支援特林岛等,海域浮标检查作业,前沿基地防卫巡逻）",
+        "recognition":"TemplateMatch",
+        "roi" : [326,70,283,593],
+        "template" : [
+            "reward/reward_delegation_emergency_STL.png",
+            "reward/reward_delegation_emergency_SBIO.png",
+            "reward/reward_delegation_emergency_FBDP.png",
+            "reward/reward_delegation_emergency_ET.png"
+        ],
+        "threshold":0.95,
+       "action":"click",
+       "post_wait_freezes":500,
+       "next":[
+        "reward_delegation_emergent_dispatch1"
+       ]          
+    },
+
+    "reward_delegation_emergent_dispatch1":{
+        "description":"派遣第一步，点击推荐",
+        "recognition":"TemplateMatch",
+        "template" : "reward/reward_delegation_dispatch.png",
+        "action":"click",
+         "next":[
+        "reward_delegation_emergent_dispatch2"
+       ]
+    },
+
+    "reward_delegation_emergent_dispatch2":{
+        "description":"派遣第二步，派遣舰队，如果需要提交石油，那么默认提交",
+        "recognition":"TemplateMatch",
+        "template" : "reward/reward_delegation_start.png",
+        "action":"click",
+        "post_wait_freezes":500,
+         "next":[
+            "reward_delegation_useoil",
+            "reward_delegation_emergent_dispatch3"
+       ]
+    },
+
+    "reward_delegation_useoil":{
+        "recognition":"TemplateMatch",
+        "template":"common/confirm.png",
+        "action":"click",
+        "post_wait_freezes":200,
+        "next":[
+            "reward_delegation_emergent_dispatch3"
+       ]
+    },
+
+    "reward_delegation_emergent_dispatch3":{
+        "description":"派遣第三步，点击空白处退出，如果需要提交石油，则触发click_confrim，继续查找符合条件的委托，直到委托接取达到上限",
+        "action":"click",
+        "target" : [131,119,34,49],
+         "next":[
+        "reward_delegation_emergent_list"
+       ]
+    },
+
+    "reward_delegation_normal":{
+        "description":"进入每日委托界面",
+        "recognition":"TemplateMatch",
+        "template" : [
+            "reward/reward_delegation_normal1.png",
+            "reward/reward_delegation_normal2.png"
+        ],
+       "action":"click",
+       "next":"reward_delegation_daily_list"
+    },
+
+    "reward_delegation_daily_list":{
+        "description":"扫描有哪些委托可以接取,如果委托接取达到上限就退出",
+        "next":[
+            "reward_delegation_limit",
+            "reward_delegation_daily_RD6",
+            "reward_delegation_daily_HOD2",
+            "reward_delegation_daily_HSG",
+            "reward_delegation_daily_AE",
+            "reward_delegation_daily_ME",
+            "reward_delegation_daily_TD2",
+            "reward_delegation_daily_RD5",
+            "reward_delegation_daily_IE",
+            "reward_delegation_daily_swipe",
+            "reward_delegation_daily_second",
+            "reward_delegation_back"
+        ]
+    },
+
+    "reward_delegation_back":{
+        "description":"没有合适的委托,返回收菜界面",
+        "recognition":"TemplateMatch",
+        "template" : "common/back.png",
+        "roi" : [23,22,69,61],
+        "action":"click",
+        "next":"reward_todolist"
+    },
+
+    "reward_delegation_daily_RD6":{
+        "description":"扫描日常委托的资源开发6,并通过点击进入委托详情",
+        "recognition":"TemplateMatch",
+        "roi" : [326,70,283,593],
+        "threshold":0.95,
+        "template" :"reward/reward_delegation_daily_RD6.png",
+       "action":"click",
+       "post_wait_freezes":500,
+       "next":[
+        "reward_delegation_daily_dispatch1"
+       ]
+    },
+
+    "reward_delegation_daily_HSG":{
+        "description":"扫描日常委托的高阶商船护卫,并通过点击进入委托详情",
+        "recognition":"TemplateMatch",
+        "roi" : [326,70,283,593],
+        "threshold":0.95,
+        "template" :"reward/reward_delegation_daily_HSG.png",
+       "action":"click",
+       "post_wait_freezes":500,
+       "next":[
+        "reward_delegation_daily_dispatch1"
+       ]
+    }, 
+
+    "reward_delegation_daily_AE":{
+        "description":"扫描日常委托的高阶演习,并通过点击进入委托详情",
+        "recognition":"TemplateMatch",
+        "roi" : [326,70,283,593],
+        "threshold":0.95,
+        "template" :"reward/reward_delegation_daily_AE.png",
+       "action":"click",
+       "post_wait_freezes":500,
+       "next":[
+        "reward_delegation_daily_dispatch1"
+       ]
+    },
+
+    "reward_delegation_daily_ME":{
+        "description":"扫描日常委托的中阶演习,并通过点击进入委托详情",
+        "recognition":"TemplateMatch",
+        "roi" : [326,70,283,593],
+        "threshold":0.95,
+        "template" :"reward/reward_delegation_daily_ME.png",
+       "action":"click",
+       "post_wait_freezes":500,
+       "next":[
+        "reward_delegation_daily_dispatch1"
+       ]
+    },
+
+    "reward_delegation_daily_TD2":{
+        "description":"扫描日常委托的战术研发2,并通过点击进入委托详情",
+        "recognition":"TemplateMatch",
+        "roi" : [326,70,283,593],
+        "threshold":0.95,
+        "template" :"reward/reward_delegation_daily_TD2.png",
+       "action":"click",
+       "post_wait_freezes":500,
+       "next":[
+        "reward_delegation_daily_dispatch1"
+       ]
+    },
+
+    "reward_delegation_daily_RD5":{
+        "description":"扫描日常委托的资源开发5,并通过点击进入委托详情",
+        "recognition":"TemplateMatch",
+        "roi" : [326,70,283,593],
+        "threshold":0.95,
+        "template" :"reward/reward_delegation_daily_RD5.png",
+       "action":"click",
+       "post_wait_freezes":500,
+       "next":[
+        "reward_delegation_daily_dispatch1"
+       ]
+    },
+
+    "reward_delegation_daily_IE":{
+        "description":"扫描日常委托的舰队初阶演习(Initial Exercise),并通过点击进入委托详情",
+        "recognition":"OCR",
+        "roi" : [326,70,283,593],
+        "expected":"舰队初阶演习",
+        "action":"click",
+        "post_wait_freezes":500,
+        "next":[
+            "reward_delegation_daily_dispatch1"
+        ]
+    },
+
+    "reward_delegation_daily_HOD2":{
+        "description":"扫描大型油田开发2,并通过点击进入委托详情",
+        "recognition":"TemplateMatch",
+        "roi" : [326,70,283,593],
+        "threshold":0.95,
+        "template" :"reward/reward_delegation_daily_HOD2.png",
+       "action":"click",
+       "post_wait_freezes":500,
+       "next":[
+        "reward_delegation_daily_dispatch1"
+       ]
+    },
+
+
+    "reward_delegation_daily_swipe":{
+        "description":"如果都没有合适的委托则选择下滑，判定标准为是否有滚动条，下滑动作完成后重新查询委托列表",
+        "recognition":"TemplateMatch",
+        "template" : "reward/reward_delegation_swipe.png",
+        "roi" : [1244,632,26,50],
+        "action":"Swipe",
+        "end" : [153,252,1,1],
+        "begin" : [152,394,1,1],
+        "next":"reward_delegation_daily_list"
+    },
+
+    "reward_delegation_daily_second":{
+        "description":"扫描日常委托次先级的委托（资源开发4，高阶战术开发1，资源开发3,资源开发2,资源开发1）,并通过点击进入委托详情",
+        "recognition":"TemplateMatch",
+        "roi" : [326,70,283,593],
+        "threshold":0.95,
+        "template" : [
+            "reward/reward_delegation_daily_RD4.png",
+            "reward/reward_delegation_daily_TD1.png",
+            "reward/reward_delegation_daily_RD3.png",
+            "reward/reward_delegation_daily_RD2.png",
+            "reward/reward_delegation_daily_RD1.png",
+             "reward/reward_delegation_daily_MSOD3.png",
+            "reward/reward_delegation_daily_SSOD3.png",
+            "reward/reward_delegation_daily_SSOD2.png"
+
+        ],
+       "action":"click",
+       "post_wait_freezes":500,
+       "next":[
+        "reward_delegation_daily_dispatch1"
+       ]
+    },
+    
+     "reward_delegation_daily_dispatch1":{
+        "description":"派遣第一步，点击推荐",
+        "recognition":"TemplateMatch",
+        "template" : "reward/reward_delegation_dispatch.png",
+        "action":"click",
+         "next":[
+        "reward_delegation_daily_dispatch2"
+       ]
+    },
+
+    "reward_delegation_daily_dispatch2":{
+        "description":"派遣第二步，派遣舰队",
+        "recognition":"TemplateMatch",
+        "template" : "reward/reward_delegation_start.png",
+        "action":"click",
+        "post_wait_freezes":1000,
+         "next":[
+            "reward_delegation_useoil",
+            "reward_delegation_daily_dispatch3"
+       ],
+       "interrupt":"click_confirm"
+    },
+
+    "reward_delegation_daily_dispatch3":{
+        "description":"派遣第三步，点击空白处退出，如果需要提交石油，则触发click_confrim，继续查找符合条件的委托，直到委托接取达到上限",
+        "action":"click",
+        "target" : [131,119,34,49],
+         "next":[
+        "reward_delegation_daily_list"
+       ],
+       "interrupt":"click_confirm"
+    },
+
+    "reward_techacademy":{
+        "description":"军部研究室，如果有完成的研究则领取奖励后进入研究界面，如果有空闲界面，则退出奖励界面",
+        "recognition":"OCR",
+        "expected":[
+            "完成",
+            "空闲"
+        ],
+        "roi" : [232,529,67,93],
+        "next":[
+            "reward_techacademy_get",
+            "reward_techacademy_menu"
+        ]
+    },
+
+     "reward_techacademy_get":{
+        "description":"获取研究奖励",
+        "recognition":"TemplateMatch",
+        "template" : "reward/reward_techacademy_finish.png",
+        "roi" : [397,550,133,46],
+        "action":"click",
+        "post_wait_freezes":500,
+        "next":"reward_techacademy_menu",
+        "interrupt":"skip_animation_click"
+     },
+
+     "reward_techacademy_menu":{
+        "description":"进入研究委托界面",
+        "recognition":"TemplateMatch",
+        "template" : "reward/reward_go.png",
+        "roi" : [397,550,133,46],
+        "action":"click",
+        "post_wait_freezes":500,
+        "next":[
+            "reward_techacademy_check",
+             "reward_techacademy",
+            "reward_find",
+            "reward_open",
+            "reward"
+        ]
+     },
+
+     "reward_techacademy_check":{
+        "description":"检测是否正确进入研究委托界面,如果正确，则点击查看研究任务",
+        "recognition":"TemplateMatch",
+        "template" : "reward/reward_techacademy_check.png",
+        "roi" : [107,2,260,47],
+        "next":"reward_techacademy_list"
+     },
+
+     "reward_techacademy_list":{
+        "description":"军部研究委托清单",
+        "next":[
+            "reward_techacademy_priority_hightest",
+            "reward_techacademy_priority_second",
+            "reward_techacademy_priority_third",
+            "reward_techacademy_priority_forth",
+            "to_home"
+        ]
+     },
+
+     "reward_techacademy_priority_hightest":{
+        "description":"最高优先级：彩定向",
+        "recognition":"OCR",
+        "roi" : [77,236,1088,88],
+        "expected":[
+            "019-UL",
+            "093-UL",
+            "083-UL",
+            "013-UL",
+            "063-UL",
+            "075-UL"
+        ],
+        "action":"click",
+        "post_wait_freezes":500,
+        "next":[
+            "reward_techacademy_dispatch1",
+            "reward_techacademy_dispatch3"
+        ]
+     },
+
+     "reward_techacademy_priority_second":{
+        "description":"次优先考虑的研究委托：除‘魔方解析’以及需要消耗图纸的之外的所有金色研究",
+        "recognition":"OCR",
+        "roi" : [77,236,1088,88],
+        "expected":[
+            "436-RF",
+            "B-351-RF",
+            "B-397-RF",
+            "038-RF",
+            "408-RF",
+            "413-RF",
+            "439-RF",
+            "463-RF",
+            "471-RF",
+            "475-RF",
+            "480-RF",
+            "482-RF",
+            "483-RF",
+            "468-RF",
+            "496-RF",
+            "739-RF",
+            "Q-002-UL",
+            "Q-010-UL",
+            "Q-051-UL",
+            "Q-068-UL",
+            "Q-089-UL"
+            
+        ],
+        "action":"click",
+        "next":[
+            "reward_techacademy_dispatch1",
+            "reward_techacademy_dispatch3"
+        ]
+     },
+
+     "reward_techacademy_priority_third":{
+        "description":"第三优先级：彩定向（蓝紫均可）",
+        "recognition":"OCR",
+        "roi" : [77,236,1088,88],
+        "replace":[
+            ["33G-MI","336-MI"]
+        ],
+        "expected":[
+            "313-MI",
+            "319-MI",
+            "336-MI",
+            "378-MI",
+            "380-MI",
+            "383-MI",
+            "713-MI",
+            "719-MI",
+            "778-MI",
+            "780-MI",
+            "783-MI"
+        ],
+        "action":"click",
+        "post_wait_freezes":500,
+        "next":[
+            "reward_techacademy_dispatch1",
+            "reward_techacademy_dispatch3"
+        ]
+     },
+
+     "reward_techacademy_priority_forth":{
+        "description":"第四优先级：金船定向、资金募集（蓝紫均可）,紫舰装解析",
+        "recognition":"OCR",
+        "roi" : [77,236,1088,88],
+        "expected":[
+            "412-MI",
+            "236-MI",
+            "513-MI",
+            "531-MI"
+        ],
+        "action":"click",
+        "post_wait_freezes":500,
+        "next":[
+            "reward_techacademy_dispatch1",
+            "reward_techacademy_dispatch3"
+        ]
+     },
+
+     "reward_techacademy_priority_firth":{
+        "description":"第五优先级：蓝舰装解析，蓝紫基础研究",
+        "recognition":"OCR",
+        "roi" : [77,236,1088,88],
+        "expected":[
+            "351-MI",
+            "G-236-MI",
+            "G-513-MI"
+        ],
+        "action":"click",
+        "post_wait_freezes":500,
+        "next":[
+            "reward_techacademy_dispatch1",
+            "reward_techacademy_dispatch3"
+        ]
+     },
+
+     "reward_techacademy_dispatch1":{
+        "description":"项目研发第一步,点击确认研发",
+        "recognition":"OCR",
+        "expected":"确认研发",
+        "roi" : [413,551,186,62],
+        "action":"click",
+        "post_wait_freezes":500,
+        "next":[
+            "reward_techacademy_dispatch2",
+            "reward_techacademy_unusal"
+        ]
+     },
+
+     "reward_techacademy_unusal":{
+        "description":"如果存在项目已经被选择，则找到已提交资源的研究并尝试使其加入队列",
+        "recognition":"OCR",
+        "expected":"已有研发中的科研项目",
+        "roi" : [504,302,271,41],
+        "action":"click",
+        "target" : [1229,344,34,33],
+        "post_wait_freezes":500,
+        "next":[
+            "reward_techacademy_unusal_scan"
+        ],
+        "interrupt":"reward_techacademy_unusal_move"
+     },
+
+     "reward_techacademy_unusal_scan":{
+        "description":"扫描哪些研究是已提交资源，找到后直接跳转到第三步",
+        "recognition":"OCR",
+        "expected":"加入队列",
+        "roi" : [516,561,161,42],
+        "post_wait_freezes":500,
+        "next":"reward_techacademy_dispatch3"
+     },
+
+     "reward_techacademy_unusal_move":{
+        "description":"扫描哪些研究是已提交资源，如果没有找到则查询下一个研究",
+        "action":"click",
+        "target" : [1229,344,34,33],
+        "post_wait_freezes":500
+     },
+
+     "reward_techacademy_dispatch2":{
+        "description":"项目研发第二步,点击提交材料",
+        "recognition":"TemplateMatch",
+        "template" : "reward/reward_techacademy_submit.png",
+        "roi" : [699,478,183,68],
+        "action":"click",
+        "post_wait_freezes":500,
+        "next":"reward_techacademy_dispatch3"
+     },
+
+     "reward_techacademy_dispatch3":{
+        "description":"项目研发第三步,点击加入队列",
+        "recognition":"TemplateMatch",
+        "template" : "reward/reward_techacademy_enqueue.png",
+        "roi" : [512,554,170,54],
+        "action":"click",
+        "post_wait_freezes":500,
+        "next":[
+            "reward_techacademy_dispatch4",
+            "reward_techacademy_full"
+        ]
+     },
+
+     "reward_techacademy_dispatch4":{
+        "description":"项目研发第四步,确认加入队列",
+        "recognition":"TemplateMatch",
+        "template" : "reward/reward_techacademy_submit.png",
+        "roi" : [699,478,183,68],
+        "action":"click",
+        "post_wait_freezes":1500,
+        "next":"reward_techacademy_list"
+     },
+
+    "reward_techacademy_full":{
+        "description":"进入项目研发第三步时,发现队列已满",
+        "recognition":"TemplateMatch",
+        "template" : "reward/reward_techacademy_full.png",
+        "recommended roi" : [620,302,172,39],
+        "focus":true,
+        "focus_tip":"队列已满，返回主界面",
+        "next":"to_home"
+    }
+}

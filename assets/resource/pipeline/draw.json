@@ -1,0 +1,124 @@
+{   
+    "drawcard":{
+        "next":[
+            "enter_drawcard"
+        ],
+        "interrupt":[
+            "to_home"
+        ]
+    },
+
+    "enter_drawcard":{
+        "recognition":"TemplateMatch",
+        "template":"drawcard/drawcard.png",
+        "roi" : [963,650,133,56],
+        "action":"click",
+        "next":[
+            "drawcard_lightship",
+            "drawcard_heavyship",
+            "drawcard_special"
+        ]
+    },
+
+    "drawcard_lightship":{
+        "enabled":true,
+        "recognition":"TemplateMatch",
+        "template":[
+            "drawcard/drawcard_lightship1.png",
+            "drawcard/drawcard_lightship2.png"
+        ],
+        "action":"click",
+        "target" : [498,623,33,33],
+        "next":"drawcard_draw"
+
+    },
+
+    "drawcard_heavyship":{
+        "enabled":false,
+        "recognition":"TemplateMatch",
+        "template":[
+            "drawcard/drawcard_heavyship1.png",
+            "drawcard/drawcard_heavyship2.png"
+        ],
+        "action":"click",
+        "target" : [708,626,28,27],
+        "next":"drawcard_draw"
+        
+    },
+
+    "drawcard_special":{
+        "enabled":false,
+        "recognition":"TemplateMatch",
+        "template":[
+            "drawcard/drawcard_special1.png",
+            "drawcard/drawcard_special2.png"
+        ],
+        "action":"click",
+        "target" : [901,619,39,35],
+        "next":"drawcard_draw"
+    },
+
+    "drawcard_draw":{
+        "recognition":"TemplateMatch",
+        "template":[
+            "drawcard/drawcard_draw.png"
+        ],
+        "roi" : [1022,593,207,70],
+        "action":"click",
+        "next":"drawcard_confirm"
+    },
+
+    "drawcard_confirm":{
+        "recognition":"TemplateMatch",
+        "template":[
+            "common/confirm.png"
+        ],
+        "roi" : [695,445,182,68],
+        "action":"click",
+        "next":[
+            "drawcard_fasterfinish"
+        ]
+    },
+
+    "drawcard_fasterfinish":{
+        "recognition":"TemplateMatch",
+        "template":[
+            "drawcard/fasterfinish.png"
+        ],
+        "recommended roi" : [1113,88,152,62],
+        "action":"click",
+        "post_delay":1000,
+        "next":[
+            "drawcard_fasterfinish_failed",
+            "drawcard_fasterfinish_confirm"
+        ]
+    },
+
+    "drawcard_fasterfinish_failed":{
+        "recognition":"TemplateMatch",
+         "template":[
+            "drawcard/none.png"
+        ],
+        "recommended roi" : [501,292,240,55],
+        "next":"to_home",
+        "focus":true,
+        "focus_tip":"船坞中没有船",
+        "focus_failed":"船坞中有船"
+    },
+
+     "drawcard_fasterfinish_confirm":{
+        "recognition":"TemplateMatch",
+         "template":[
+            "common/confirm.png"
+        ],
+        "action":"click",
+        "post_delay":1000,
+        "next":"to_home",
+        "interrupt":[
+            "skip_animation_click"
+        ]
+    }
+
+
+    
+}

@@ -1,0 +1,228 @@
+{
+    "dailychallenge":{
+        "next":"dailychallenge_start",
+        "interrupt":[
+            "to_home",
+            "check_standby"
+        ]
+    },
+
+    "dailychallenge_start":{
+        "description":"检测出击图标，进入出击界面",
+        "recognition":"TemplateMatch",
+        "template" : "dailychallenge/dailychallenge_start.png",
+        "roi" : [1124,522,103,56],
+        "action":"click",
+        "post_wait_freezes":500,
+        "next":[
+            "dailychallenge_enter",
+            "dailychallenge_start",
+            "dailychallenge",
+            "to_home"
+        ]
+    },
+
+    "dailychallenge_enter":{
+        "description":"进入出击界面后，点击每日挑战按钮",
+        "recognition":"TemplateMatch",
+        "template" : "dailychallenge/dailychallenge_enter.png",
+        "roi" : [681,591,108,48],
+        "action":"click",
+        "post_wait_freezes":500,
+        "next":[
+            "dailychallenge_list",
+            "dailychallenge_enter",
+            "dailychallenge_start",
+            "dailychallenge",
+            "to_home"
+        ]
+    },
+
+    "dailychallenge_list":{
+        "description":"进入每日挑战列表,判定退出规则：所有可进行的挑战均已完成",
+        "post_wait_freezes":500,
+        "next":[
+            "dailychallenge_TT",
+            "dailychallenge_DS_close",
+            "dailychallenge_DS",
+            "dailychallenge_DISA_close",
+            "dailychallenge_DISA",
+            "dailychallenge_EOMS_close",
+            "to_home"
+        ]
+    },
+
+    "dailychallenge_TT":{
+        "description":"进入战术研修列表",
+        "recognition":"TemplateMatch",
+        "template" : "dailychallenge/dailychallenge_TT_enter.png",
+        "roi" : [514,449,188,70],
+        "action":"click",
+        "next":"dailychallenge_TT_scan",
+        "interrupt":[
+            "dailychallenge_swipe"
+        ]
+    },
+
+    "dailychallenge_TT_scan":{
+        "description":"扫描战术研修列表,查询可选项",
+        "recognition":"TemplateMatch",
+        "template" : [
+            "dailychallenge/dailychallenge_TT_1.png",
+            "dailychallenge/dailychallenge_TT_2.png",
+            "dailychallenge/dailychallenge_TT_3.png",
+            "dailychallenge/dailychallenge_TT_4.png",
+            "dailychallenge/dailychallenge_TT_5.png",
+            "dailychallenge/dailychallenge_TT_6.png"
+        ],
+        "roi" : [356,65,309,536],
+        "action":"click",
+        "post_wait_freezes":500,
+        "next":[
+            "dailychallenge_do_dispatch1",
+            "dailychallenge_do_dispatch3"
+        ]
+    },
+
+    "dailychallenge_DS":{
+        "description":"进入斩首行动列表",
+        "recognition":"TemplateMatch",
+        "template" : "dailychallenge/dailychallenge_DS_enter.png",
+        "roi" : [514,342,246,176],
+        "threshold":0.9,
+        "action":"click",
+        "next":"dailychallenge_DS_scan",
+        "interrupt":[
+            "dailychallenge_swipe"
+        ]
+    },
+
+    "dailychallenge_DS_scan":{
+        "description":"扫描斩首行动列表,查询可选项",
+        "recognition":"OCR",
+        "expected" : [
+            "Lv.95",
+            "Lv.70",
+            "Lv.50",
+            "Lv.35",
+            "Lv.25",
+            "Lv.10"
+        ],
+        "roi" : [369,126,156,462],
+        "action":"click",
+        "post_wait_freezes":500,
+        "next":[
+            "dailychallenge_do_dispatch1",
+            "dailychallenge_do_dispatch3"
+        ]
+    },
+
+    "dailychallenge_DISA":{
+        "description":"扫描是否为海域突进（Dash In the Sea Area）",
+        "recognition":"TemplateMatch",
+        "template" : "dailychallenge/dailychallenge_DISA_enter.png",
+        "roi" : [511,337,258,188],
+        "threshold":0.9,
+        "action":"click",
+        "next":"dailychallenge_DISA_scan",
+        "interrupt":[
+            "dailychallenge_swipe"
+        ]
+    },
+
+    "dailychallenge_DISA_scan":{
+        "description":"扫描海域突进列表,查询可选项",
+        "recognition":"OCR",
+        "expected" : [
+            "Lv.95",
+            "Lv.70",
+            "Lv.50",
+            "Lv.35",
+            "Lv.25",
+            "Lv.10"
+        ],
+        "roi" : [369,126,156,462],
+        "action":"click",
+        "post_wait_freezes":500,
+        "next":[
+            "dailychallenge_do_dispatch1",
+            "dailychallenge_do_dispatch3"
+        ]
+    },
+
+    "dailychallenge_DS_close":{
+        "description":"查看斩首行动是否开放,如果没有开放，则直接跳转到第四步",
+        "recognition":"TemplateMatch",
+        "green_mask":true,
+        "threshold":0.9,
+        "template" : "dailychallenge/dailychallenge_DS_close.png",
+        "roi" : [516,342,248,178],
+        "next":"dailychallenge_do_dispatch4"
+    },
+
+    "dailychallenge_DISA_close":{
+        "description":"查看海域突进是否开放,如果没有开放，则直接跳转到第四步",
+        "recognition":"TemplateMatch",
+        "green_mask":true,
+        "threshold":0.9,
+        "template" : "dailychallenge/dailychallenge_DISA_close.png",
+        "roi" : [516,342,248,178],
+        "next":"dailychallenge_do_dispatch4"
+    },
+
+    "dailychallenge_EOMS_close":{
+        "description":"商船护送（Escort of merchant ship）是否开放,如果没有开放，则直接跳转到第四步",
+        "recognition":"TemplateMatch",
+        "green_mask":true,
+        "threshold":0.9,
+        "template" : "dailychallenge/dailychallenge_EOMS_close.png",
+        "roi" : [516,342,248,178],
+        "next":"dailychallenge_do_dispatch4"
+    },
+
+    "dailychallenge_swipe":{
+        "description":"如果都没有合适的对象则选择下滑，判定标准为是否有滚动条，下滑动作完成后重新查询委托列表",
+        "recognition":"TemplateMatch",
+        "template" : "dailychallenge/dailychallenge_swipe.png",
+        "roi" : [1207,576,37,70],
+        "action":"Swipe",
+        "begin" : [1223,300,1,1],
+        "end" : [1223,406,1,1]
+    },
+
+    "dailychallenge_do_dispatch1":{
+        "description":"第一步，点击‘快速挑战3次’",
+        "recognition":"TemplateMatch",
+        "template" : "dailychallenge/dailychallenge_battle.png",
+        "roi" : [998,290,158,66],
+        "action":"click",
+        "post_wait_freezes":200,
+        "next":"dailychallenge_do_dispatch2"
+    },
+
+    "dailychallenge_do_dispatch2":{
+        "description":"第二步，确认奖励’",
+        "recognition":"OCR",
+        "expected":"点击继续",
+        "action":"click",
+        "next":"dailychallenge_do_dispatch3"
+    },
+
+    "dailychallenge_do_dispatch3":{
+        "description":"第三步，返回每日挑战界面’",
+        "recognition":"TemplateMatch",
+        "template" : "common/back.png",
+        "roi" : [23,22,69,61],
+        "action":"click",
+        "next":"dailychallenge_do_dispatch4"
+    },
+
+    "dailychallenge_do_dispatch4":{
+        "description":"第四步，寻找下一个挑战’",
+        "recognition":"TemplateMatch",
+        "template" : "dailychallenge/dailychallenge_next.png",
+        "roi" : [1213,322,51,76],
+        "action":"click",
+        "next":"dailychallenge_list"
+    }
+}
